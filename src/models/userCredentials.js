@@ -5,8 +5,8 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// declare the necessary variables
 
+// declare the necessary variables
 
 // define the schema
 const credentialsSchema = new mongoose.Schema({
@@ -38,7 +38,7 @@ const credentialsSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please Confirm Your Password."],
         min: 8
-    }, 
+    },
     tokens: [{
         token: {
             type: String,
@@ -47,12 +47,13 @@ const credentialsSchema = new mongoose.Schema({
     }]
 })
 
+
 // Making a middleware to authorize a user using jsonwebtoken
 credentialsSchema.methods.generateAuthToken = async function () {
     try {
         const token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token: token});
-        const tokenSaved = await this.save(); 
+        this.tokens = this.tokens.concat({ token: token });
+        const tokenSaved = await this.save();
         return token;
     } catch (error) {
         console.error("Jwt signing process could not be finished due to some errors.");
@@ -66,7 +67,7 @@ credentialsSchema.pre("save", async function (next) {
     try {
         if (this.isModified("password")) {
             this.password = await bcrypt.hash(this.password, 10);
-            this.cPassword = await bcrypt.hash(this.cPassword,10);
+            this.cPassword = await bcrypt.hash(this.cPassword, 10);
         }
         next();
     } catch (error) {

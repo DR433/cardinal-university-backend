@@ -100,11 +100,13 @@ router.post("/signup", async (request, response) => {
 })
 
 // adding a logout route
-router.get("/logout", authentication, async (request, response)=>{
+router.get("/logout", authentication, async (request, response) => {
     try {
-        request.user.tokens = request.user.tokens.filter((tokenObject)=>{
+        request.user.tokens = request.user.tokens.filter((tokenObject) => {
             return tokenObject.token !== request.token;
         })
+
+        // request.user.tokens = [];  // This line will be added with it if you want to logout from all devices.
         response.clearCookie('jwt');
         await request.user.save();
         response.status(200).render("login");
